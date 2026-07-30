@@ -47,27 +47,25 @@ class QrCodeController extends Controller
             ->with('success', 'QR Code berhasil dibuat!');
     }
 
-    public function show(QrCode $qrCode): View
+    public function show(QrCode $qrcode): View
     {
-        if ($qrCode->user_id !== auth()->id()) {
+        abort_if($qrcode->user_id !== auth()->id(), 403);
+
+        return view('qrcode.show', compact('qrcode'));
+    }
+
+    public function edit(QrCode $qrcode): View
+    {
+        if ($qrcode->user_id !== auth()->id()) {
             abort(403);
         }
 
-        return view('qrcode.show', compact('qrCode'));
+        return view('qrcode.edit', compact('qrcode'));
     }
 
-    public function edit(QrCode $qrCode): View
+    public function update(Request $request, QrCode $qrcode): RedirectResponse
     {
-        if ($qrCode->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        return view('qrcode.edit', compact('qrCode'));
-    }
-
-    public function update(Request $request, QrCode $qrCode): RedirectResponse
-    {
-        if ($qrCode->user_id !== auth()->id()) {
+        if ($qrcode->user_id !== auth()->id()) {
             abort(403);
         }
 
@@ -81,74 +79,74 @@ class QrCodeController extends Controller
             'format' => ['required', 'string', 'in:png,svg'],
         ]);
 
-        $qrCode->update($validated);
+        $qrcode->update($validated);
 
-        if ($qrCode->filename && Storage::disk('public')->exists($qrCode->filename)) {
-            Storage::disk('public')->delete($qrCode->filename);
+        if ($qrcode->filename && Storage::disk('public')->exists($qrcode->filename)) {
+            Storage::disk('public')->delete($qrcode->filename);
         }
 
-        $this->generateQrCodeImage($qrCode);
+        $this->generateQrCodeImage($qrcode);
 
-        return redirect()->route('qrcode.show', $qrCode)
+        return redirect()->route('qrcode.show', $qrcode)
             ->with('success', 'QR Code berhasil diperbarui!');
     }
 
-    public function destroy(QrCode $qrCode): RedirectResponse
+    public function destroy(QrCode $qrcode): RedirectResponse
     {
-        if ($qrCode->user_id !== auth()->id()) {
+        if ($qrcode->user_id !== auth()->id()) {
             abort(403);
         }
 
-        if ($qrCode->filename && Storage::disk('public')->exists($qrCode->filename)) {
-            Storage::disk('public')->delete($qrCode->filename);
+        if ($qrcode->filename && Storage::disk('public')->exists($qrcode->filename)) {
+            Storage::disk('public')->delete($qrcode->filename);
         }
 
-        $qrCode->delete();
+        $qrcode->delete();
 
         return redirect()->route('qrcode.index')
             ->with('success', 'QR Code berhasil dihapus!');
     }
 
-    public function download(QrCode $qrCode): \Illuminate\Http\Response
+    public function download(QrCode $qrcode): \Illuminate\Http\Response
     {
-        if ($qrCode->user_id !== auth()->id()) {
+        if ($qrcode->user_id !== auth()->id()) {
             abort(403);
         }
 
-        if (!$qrCode->filename || !Storage::disk('public')->exists($qrCode->filename)) {
-            $this->generateQrCodeImage($qrCode);
+        if (!$qrcode->filename || !Storage::disk('public')->exists($qrcode->filename)) {
+            $this->generateQrCodeImage($qrcode);
         }
 
-        $filePath = Storage::disk('public')->path($qrCode->filename);
-        $extension = $qrCode->format === 'svg' ? 'svg' : 'png';
+        $filePath = Storage::disk('public')->path($qrcode->filename);
+        $extension = $qrcode->format === 'svg' ? 'svg' : 'png';
 
         return response()->file($filePath, [
-            'Content-Type' => $qrCode->format === 'svg' ? 'image/svg+xml' : 'image/png',
-            'Content-Disposition' => 'attachment; filename="' . $qrCode->title . '.' . $extension . '"',
+            'Content-Type' => $qrcode->format === 'svg' ? 'image/svg+xml' : 'image/png',
+            'Content-Disposition' => 'attachment; filename="' . $qrcode->title . '.' . $extension . '"',
         ]);
     }
 
-    private function generateQrCodeImage(QrCode $qrCode): void
+    private function generateQrCodeImage(QrCode $qrcode): void
     {
-        $qr = QrCodeFacade::format($qrCode->format === 'svg' ? 'svg' : 'png')
-            ->size($qrCode->size)
+        $qr = QrCodeFacade::format($qrcode->format === 'svg' ? 'svg' : 'png')
+            ->size($qrcode->size)
             ->color(
-                hexdec(substr($qrCode->foreground_color, 1, 2)),
-                hexdec(substr($qrCode->foreground_color, 3, 2)),
-                hexdec(substr($qrCode->foreground_color, 5, 2))
+                hexdec(substr($qrcode->foreground_color, 1, 2)),
+                hexdec(substr($qrcode->foreground_color, 3, 2)),
+                hexdec(substr($qrcode->foreground_color, 5, 2))
             )
             ->backgroundColor(
-                hexdec(substr($qrCode->background_color, 1, 2)),
-                hexdec(substr($qrCode->background_color, 3, 2)),
-                hexdec(substr($qrCode->background_color, 5, 2))
+                hexdec(substr($qrcode->background_color, 1, 2)),
+                hexdec(substr($qrcode->background_color, 3, 2)),
+                hexdec(substr($qrcode->background_color, 5, 2))
             );
 
-        $image = $qr->generate($qrCode->content);
+        $image = $qr->generate($qrcode->content);
 
-        $filename = 'qrcodes/' . $qrCode->id . '_' . time() . '.' . $qrCode->format;
+        $filename = 'qrcodes/' . $qrcode->id . '_' . time() . '.' . $qrcode->format;
 
         Storage::disk('public')->put($filename, $image);
 
-        $qrCode->update(['filename' => $filename]);
+        $qrcode->update(['filename' => $filename]);
     }
 }
