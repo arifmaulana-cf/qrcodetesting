@@ -1,0 +1,4 @@
+.env
+vendor/
+storage/qrcodes/*.png
+storage/qrcodes/*.jpg
