@@ -55,4 +55,14 @@ class Database
             ':ip'   => $ip,
         ]);
     }
+
+    public function getHistory(int $limit = 20): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id, input_text, file_name, created_at FROM qr_logs ORDER BY created_at DESC LIMIT :lim'
+        );
+        $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }
