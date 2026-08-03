@@ -84,7 +84,7 @@ abstract class PdfToolService
     protected function pageCount(string $pdf): int
     {
         [$code, $output] = $this->run([
-            $this->gs(), '-q', '-dNODISPLAY', '-c',
+            $this->gs(), '-q', '-dNODISPLAY', '--permit-file-read='.$pdf, '-c',
             '('.$pdf.') (r) file runpdfbegin pdfpagecount = quit',
         ]);
 
