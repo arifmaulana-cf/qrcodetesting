@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PdfToolController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrCodeController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,16 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('qrcode', QrCodeController::class);
     Route::get('/qrcode/{qrCode}/download', [QrCodeController::class, 'download'])->name('qrcode.download');
+});
+
+Route::middleware(['auth', 'verified'])->prefix('pdf-tools')->name('pdf-tools.')->group(function () {
+    Route::get('/', [PdfToolController::class, 'index'])->name('index');
+    Route::get('/{tool}', [PdfToolController::class, 'show'])
+        ->whereIn('tool', ['word-to-pdf', 'merge', 'split', 'compress', 'pdf-to-images', 'images-to-pdf', 'rotate'])
+        ->name('show');
+    Route::post('/{tool}', [PdfToolController::class, 'process'])
+        ->whereIn('tool', ['word-to-pdf', 'merge', 'split', 'compress', 'pdf-to-images', 'images-to-pdf', 'rotate'])
+        ->name('process');
 });
 
 require __DIR__.'/auth.php';
