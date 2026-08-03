@@ -1,52 +1,99 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <div class="text-center">
+        <h1 class="text-2xl font-semibold tracking-tight">Buat akun baru</h1>
+        <p class="mt-2 text-sm text-[#706f6c] dark:text-[#A1A09A]">
+            Gratis &mdash; mulai buat QR Code Anda sekarang
+        </p>
+    </div>
+
+    <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-5">
         @csrf
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+            <label for="name" class="block text-sm font-medium">
+                Nama Lengkap
+            </label>
+            <div class="relative mt-1.5">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#706f6c] dark:text-[#A1A09A]">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Nama Anda"
+                    class="block w-full rounded-lg border border-[#19140035] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] py-2.5 pl-10 pr-3.5 text-sm text-[#1b1b18] dark:text-[#EDEDEC] placeholder-[#A1A09A] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-2 focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25 focus:outline-none transition">
+            </div>
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+        <div>
+            <label for="email" class="block text-sm font-medium">
+                Email
+            </label>
+            <div class="relative mt-1.5">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#706f6c] dark:text-[#A1A09A]">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6l-10 7L2 6"/><path d="M2 6h20v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6z"/></svg>
+                </span>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="nama@contoh.com"
+                    class="block w-full rounded-lg border border-[#19140035] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] py-2.5 pl-10 pr-3.5 text-sm text-[#1b1b18] dark:text-[#EDEDEC] placeholder-[#A1A09A] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-2 focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25 focus:outline-none transition">
+            </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
+        <div x-data="{ show: false }">
+            <label for="password" class="block text-sm font-medium">
+                Kata Sandi
+            </label>
+            <div class="relative mt-1.5">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#706f6c] dark:text-[#A1A09A]">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
+                <input id="password" :type="show ? 'text' : 'password'" name="password" required autocomplete="new-password" placeholder="Minimal 8 karakter"
+                    class="block w-full rounded-lg border border-[#19140035] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] py-2.5 pl-10 pr-11 text-sm text-[#1b1b18] dark:text-[#EDEDEC] placeholder-[#A1A09A] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-2 focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25 focus:outline-none transition">
+                <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] transition-colors" :aria-label="show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'">
+                    <svg x-show="!show" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg x-show="show" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+                </button>
+            </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
+        <div x-data="{ show: false }">
+            <label for="password_confirmation" class="block text-sm font-medium">
+                Konfirmasi Kata Sandi
+            </label>
+            <div class="relative mt-1.5">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#706f6c] dark:text-[#A1A09A]">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </span>
+                <input id="password_confirmation" :type="show ? 'text' : 'password'" name="password_confirmation" required autocomplete="new-password" placeholder="Ulangi kata sandi"
+                    class="block w-full rounded-lg border border-[#19140035] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] py-2.5 pl-10 pr-11 text-sm text-[#1b1b18] dark:text-[#EDEDEC] placeholder-[#A1A09A] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-2 focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25 focus:outline-none transition">
+                <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] transition-colors" :aria-label="show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'">
+                    <svg x-show="!show" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg x-show="show" x-cloak class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+                </button>
+            </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+        <div>
+            <button type="submit"
+                class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#1b1b18] dark:bg-[#EDEDEC] px-4 py-2.5 text-sm font-semibold text-white dark:text-[#1b1b18] hover:bg-black dark:hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#1b1b18]/30 dark:focus:ring-[#EDEDEC]/40 transition-colors">
+                Daftar
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
         </div>
+
+        <p class="text-xs text-center text-[#706f6c] dark:text-[#A1A09A]">
+            Dengan mendaftar, Anda menyetujui ketentuan layanan kami.
+        </p>
     </form>
+
+    <p class="mt-6 text-center text-sm text-[#706f6c] dark:text-[#A1A09A]">
+        Sudah punya akun?
+        <a href="{{ route('login') }}" class="font-semibold text-[#f53003] dark:text-[#FF4433] hover:opacity-80 transition-opacity">
+            Masuk di sini
+        </a>
+    </p>
 </x-guest-layout>
