@@ -1,81 +1,86 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Create QR Code') }}
-        </h2>
+        <div>
+            <h2 class="font-semibold text-xl tracking-tight">
+                Buat QR Code
+            </h2>
+            <p class="mt-1 text-sm text-[#706f6c] dark:text-[#A1A09A]">
+                Ubah data apa pun menjadi QR Code dalam hitungan detik.
+            </p>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <form method="POST" action="{{ route('qrcode.store') }}">
-                        @csrf
+    <div class="py-10">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-[#161615] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-2xl p-8">
+                <form method="POST" action="{{ route('qrcode.store') }}">
+                    @csrf
 
-                        <div class="mb-4">
-                            <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                            <input type="text" name="title" id="title" value="{{ old('title') }}" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    <div class="mb-5">
+                        <label for="title" class="block text-sm font-medium">Judul</label>
+                        <input type="text" name="title" id="title" value="{{ old('title') }}" required placeholder="Contoh: Menu Restoran"
+                            class="mt-1.5 block w-full rounded-lg border-[#19140035] dark:border-[#3E3E3A] dark:bg-[#161615] dark:text-[#EDEDEC] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25">
+                        @error('title') <p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="mb-5">
+                        <label for="type" class="block text-sm font-medium">Tipe Konten</label>
+                        <select name="type" id="type" required
+                            class="mt-1.5 block w-full rounded-lg border-[#19140035] dark:border-[#3E3E3A] dark:bg-[#161615] dark:text-[#EDEDEC] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25">
+                            <option value="text" {{ old('type') === 'text' ? 'selected' : '' }}>Teks</option>
+                            <option value="url" {{ old('type') === 'url' ? 'selected' : '' }}>URL / Tautan</option>
+                            <option value="email" {{ old('type') === 'email' ? 'selected' : '' }}>Email</option>
+                            <option value="phone" {{ old('type') === 'phone' ? 'selected' : '' }}>Telepon</option>
+                            <option value="sms" {{ old('type') === 'sms' ? 'selected' : '' }}>SMS</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-5">
+                        <label for="content" class="block text-sm font-medium">Isi Konten</label>
+                        <textarea name="content" id="content" rows="4" required placeholder="Masukkan data yang akan diubah menjadi QR Code"
+                            class="mt-1.5 block w-full rounded-lg border-[#19140035] dark:border-[#3E3E3A] dark:bg-[#161615] dark:text-[#EDEDEC] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25">{{ old('content') }}</textarea>
+                        <p id="content-hint" class="text-xs text-[#706f6c] dark:text-[#A1A09A] mt-1.5">Masukkan data yang akan dikodekan ke dalam QR Code</p>
+                        @error('content') <p class="text-red-500 dark:text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label for="foreground_color" class="block text-sm font-medium">Warna Depan</label>
+                            <input type="color" name="foreground_color" id="foreground_color" value="{{ old('foreground_color', '#000000') }}"
+                                class="mt-1.5 block w-full h-11 rounded-lg border-[#19140035] dark:border-[#3E3E3A] dark:bg-[#161615] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25 cursor-pointer">
                         </div>
+                        <div>
+                            <label for="background_color" class="block text-sm font-medium">Warna Latar</label>
+                            <input type="color" name="background_color" id="background_color" value="{{ old('background_color', '#ffffff') }}"
+                                class="mt-1.5 block w-full h-11 rounded-lg border-[#19140035] dark:border-[#3E3E3A] dark:bg-[#161615] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25 cursor-pointer">
+                        </div>
+                    </div>
 
-                        <div class="mb-4">
-                            <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
-                            <select name="type" id="type" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="text" {{ old('type') === 'text' ? 'selected' : '' }}>Text</option>
-                                <option value="url" {{ old('type') === 'url' ? 'selected' : '' }}>URL</option>
-                                <option value="email" {{ old('type') === 'email' ? 'selected' : '' }}>Email</option>
-                                <option value="phone" {{ old('type') === 'phone' ? 'selected' : '' }}>Phone</option>
-                                <option value="sms" {{ old('type') === 'sms' ? 'selected' : '' }}>SMS</option>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                        <div>
+                            <label for="size" class="block text-sm font-medium">Ukuran (px)</label>
+                            <input type="number" name="size" id="size" value="{{ old('size', 300) }}" min="100" max="1000" required
+                                class="mt-1.5 block w-full rounded-lg border-[#19140035] dark:border-[#3E3E3A] dark:bg-[#161615] dark:text-[#EDEDEC] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25">
+                        </div>
+                        <div>
+                            <label for="format" class="block text-sm font-medium">Format</label>
+                            <select name="format" id="format" required
+                                class="mt-1.5 block w-full rounded-lg border-[#19140035] dark:border-[#3E3E3A] dark:bg-[#161615] dark:text-[#EDEDEC] shadow-sm focus:border-[#f53003] dark:focus:border-[#FF4433] focus:ring-[#f53003]/25 dark:focus:ring-[#FF4433]/25">
+                                <option value="png" {{ old('format') === 'png' ? 'selected' : '' }}>PNG</option>
+                                <option value="svg" {{ old('format') === 'svg' ? 'selected' : '' }}>SVG</option>
                             </select>
                         </div>
+                    </div>
 
-                        <div class="mb-4">
-                            <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
-                            <textarea name="content" id="content" rows="4" required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('content') }}</textarea>
-                            <p id="content-hint" class="text-xs text-gray-500 mt-1">Enter the data to encode in the QR code</p>
-                            @error('content') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="foreground_color" class="block text-sm font-medium text-gray-700">Foreground Color</label>
-                                <input type="color" name="foreground_color" id="foreground_color" value="{{ old('foreground_color', '#000000') }}"
-                                    class="mt-1 block w-full h-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            </div>
-                            <div>
-                                <label for="background_color" class="block text-sm font-medium text-gray-700">Background Color</label>
-                                <input type="color" name="background_color" id="background_color" value="{{ old('background_color', '#ffffff') }}"
-                                    class="mt-1 block w-full h-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="size" class="block text-sm font-medium text-gray-700">Size (px)</label>
-                                <input type="number" name="size" id="size" value="{{ old('size', 300) }}" min="100" max="1000" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            </div>
-                            <div>
-                                <label for="format" class="block text-sm font-medium text-gray-700">Format</label>
-                                <select name="format" id="format" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <option value="png" {{ old('format') === 'png' ? 'selected' : '' }}>PNG</option>
-                                    <option value="svg" {{ old('format') === 'svg' ? 'selected' : '' }}>SVG</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-4">
-                            <button type="submit" class="px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                                Generate QR Code
-                            </button>
-                            <a href="{{ route('qrcode.index') }}" class="text-sm text-gray-600 hover:underline">Cancel</a>
-                        </div>
-                    </form>
-                </div>
+                    <div class="flex items-center gap-4 pt-5 border-t border-[#19140014] dark:border-[#3E3E3A]/40">
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 rounded-lg bg-[#1b1b18] dark:bg-[#EDEDEC] px-5 py-2.5 text-sm font-semibold text-white dark:text-[#1b1b18] hover:bg-black dark:hover:bg-white transition-colors">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                            Buat QR Code
+                        </button>
+                        <a href="{{ route('qrcode.index') }}" class="text-sm text-[#706f6c] dark:text-[#A1A09A] hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] transition-colors">Batal</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -84,13 +89,12 @@
     <script>
         document.getElementById('type').addEventListener('change', function() {
             const hint = document.getElementById('content-hint');
-            const content = document.getElementById('content');
             switch(this.value) {
-                case 'url': hint.textContent = 'Enter a full URL (e.g. https://example.com)'; break;
-                case 'email': hint.textContent = 'Enter an email address'; break;
-                case 'phone': hint.textContent = 'Enter a phone number (e.g. +628123456789)'; break;
-                case 'sms': hint.textContent = 'Enter SMS number (e.g. +628123456789)'; break;
-                default: hint.textContent = 'Enter the data to encode in the QR code';
+                case 'url': hint.textContent = 'Masukkan URL lengkap (contoh: https://contoh.com)'; break;
+                case 'email': hint.textContent = 'Masukkan alamat email'; break;
+                case 'phone': hint.textContent = 'Masukkan nomor telepon (contoh: +628123456789)'; break;
+                case 'sms': hint.textContent = 'Masukkan nomor SMS (contoh: +628123456789)'; break;
+                default: hint.textContent = 'Masukkan data yang akan dikodekan ke dalam QR Code';
             }
         });
     </script>
