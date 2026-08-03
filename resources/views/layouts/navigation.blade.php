@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('qrcode.index')" :active="request()->routeIs('qrcode.*')">
                         QR Codes
                     </x-nav-link>
+                    <x-nav-link :href="route('pdf-tools.index')" :active="request()->routeIs('pdf-tools.*')">
+                        Alat PDF
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -83,6 +86,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('qrcode.index')" :active="request()->routeIs('qrcode.*')">
                 QR Codes
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('pdf-tools.index')" :active="request()->routeIs('pdf-tools.*')">
+                Alat PDF
             </x-responsive-nav-link>
         </div>
 

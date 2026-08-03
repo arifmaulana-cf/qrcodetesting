@@ -30,6 +30,7 @@
 
                 <div class="hidden md:flex items-center gap-8 text-sm text-[#706f6c] dark:text-[#A1A09A]">
                     <a href="#fitur" class="hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] transition-colors">Fitur</a>
+                    <a href="#alat-pdf" class="hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] transition-colors">Alat PDF</a>
                     <a href="#cara-kerja" class="hover:text-[#1b1b18] dark:hover:text-[#EDEDEC] transition-colors">Cara Kerja</a>
                 </div>
 
@@ -196,6 +197,52 @@
                             <h3 class="mt-4 font-semibold">{!! $feature['title'] !!}</h3>
                             <p class="mt-1.5 text-sm text-[#706f6c] dark:text-[#A1A09A] leading-relaxed">{!! $feature['desc'] !!}</p>
                         </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        {{-- PDF Tools --}}
+        <section id="alat-pdf" class="border-t border-[#19140014] dark:border-[#3E3E3A]/40">
+            <div class="max-w-6xl mx-auto px-6 py-20 lg:py-24">
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                    <div class="max-w-2xl">
+                        <span class="inline-flex items-center gap-2 rounded-full border border-[#19140035] dark:border-[#3E3E3A] px-3.5 py-1 text-xs font-medium text-[#706f6c] dark:text-[#A1A09A]">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#f53003] dark:bg-[#FF4433]"></span>
+                            Alat PDF
+                        </span>
+                        <h2 class="mt-4 text-3xl lg:text-4xl font-semibold tracking-tight">
+                            Kelola file PDF dengan <span class="text-[#f53003] dark:text-[#FF4433]">mudah</span>
+                        </h2>
+                        <p class="mt-4 text-[#706f6c] dark:text-[#A1A09A] text-lg">
+                            Konversi, gabungkan, kompres, dan atur PDF Anda &mdash; semua gratis, tanpa watermark.
+                        </p>
+                    </div>
+                    <a href="{{ route('pdf-tools.index') }}"
+                        class="inline-flex items-center gap-2 rounded-lg bg-[#1b1b18] dark:bg-[#EDEDEC] px-6 py-3 text-sm font-semibold text-white dark:text-[#1b1b18] hover:bg-black dark:hover:bg-white transition-colors shrink-0">
+                        Lihat Semua Alat
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    @php
+                        $pdfTools = [
+                            ['key' => 'word-to-pdf', 'title' => 'Word ke PDF', 'desc' => 'Ubah DOC/DOCX menjadi PDF berkualitas tinggi.'],
+                            ['key' => 'merge', 'title' => 'Gabung PDF', 'desc' => 'Gabungkan beberapa PDF menjadi satu file.'],
+                            ['key' => 'compress', 'title' => 'Kompres PDF', 'desc' => 'Perkecil ukuran PDF agar mudah dibagikan.'],
+                            ['key' => 'rotate', 'title' => 'Putar PDF', 'desc' => 'Rotasi halaman PDF 90, 180, atau 270 derajat.'],
+                        ];
+                    @endphp
+
+                    @foreach ($pdfTools as $tool)
+                        <a href="{{ route('pdf-tools.show', $tool['key']) }}" class="group bg-white dark:bg-[#161615] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-2xl p-6 hover:-translate-y-1 transition-transform duration-300">
+                            <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-[#f53003]/10 dark:bg-[#FF4433]/10 text-[#f53003] dark:text-[#FF4433] group-hover:bg-[#1b1b18] group-hover:text-white dark:group-hover:bg-[#EDEDEC] dark:group-hover:text-[#1b1b18] transition-colors">
+                                @include('pdf-tools.partials.icon', ['key' => $tool['key']])
+                            </span>
+                            <h3 class="mt-4 font-semibold">{{ $tool['title'] }}</h3>
+                            <p class="mt-1.5 text-sm text-[#706f6c] dark:text-[#A1A09A] leading-relaxed">{{ $tool['desc'] }}</p>
+                        </a>
                     @endforeach
                 </div>
             </div>
